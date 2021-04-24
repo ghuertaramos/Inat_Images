@@ -5,7 +5,7 @@ Script to download images from inaturalist.org
 
 1.- Make a species list on a csv file named *species.csv*
 
-![](.\samples\list.png)
+![](\samples\list.png)
 
 2.- Run the script. (You must have R and the *rinat* package installed)
 
