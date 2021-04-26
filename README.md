@@ -5,7 +5,7 @@ Script to download images from inaturalist.org
 
 1.- Make a species list on a csv file named *species.csv*
 
-![](.\samples\list.png)
+![](./samples/list.png)
 
 2.- Run the script. (You must have R and the *rinat* package installed)
 
@@ -15,11 +15,11 @@ Script to download images from inaturalist.org
 
 3.- If everything goes well you should have a folder for each species from your list
 
-![](.\samples\folders.png)
+![](./samples/folders.png)
 
 4.- Image file names are formatted as follows: `species_user_license_observation.jpeg`
 
-![](.\samples\images.png)
+![](./samples/images.png)
 
 5.- A file *inat_data.csv* with the results of your query will be saved, this files include various information like :species, date, url, coordinates, user, etc.
 
