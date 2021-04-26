@@ -58,7 +58,8 @@ newdata <- subset(inat_data, scientific_name == i)
 if (nrow(newdata) > 10){
 
 newdata <- subset(newdata, quality_grade == "research" )
-newdata <- subset(newdata, license != "CC")
+#"cc" images are no tagged, this next step excludes them
+newdata <- subset(newdata, license != "")
 
 final_inat_data  <- rbind(final_inat_data, newdata)
 } else{
@@ -73,7 +74,7 @@ for (b in seq(nrow(newdata))){
   tryCatch({
   user<-newdata[b,11]
   cc<-newdata[b,33]
-  #for some reason "cc" images are no tagged, this next step includes "CC" on file names
+  #"cc" images are no tagged, this next step includes "CC" on file names
     if (cc==""){
         cc<-"CC"
     }
@@ -89,3 +90,4 @@ setwd("../")
 setwd("../")
 #generate file with inaturalist observations information
 write.csv(final_inat_data, "./inat_data.csv", row.names = F)
+
