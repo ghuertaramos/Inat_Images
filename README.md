@@ -1,4 +1,10 @@
 # Inat_Images
+
+
+You can now cite the code using the following DOI
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4725852.svg)](https://doi.org/10.5281/zenodo.4725852)
+
+
 Script to download images from inaturalist.org
 
 
