@@ -7,11 +7,25 @@ Script to download images from inaturalist.org
 
 ![](./samples/list.png)
 
-2.- Run the script. (You must have R and the *rinat* package installed)
+2.- Run the script. (You must have R and the *rinat* package installed) 
 
-​	`Rscript inat_images.R`
+​	You must always provide 3 arguments for your query:
 
+ - `arg 1` = Maximum number of results
+    - should not be a number higher than 10000, keep in mind this is before filtering 	
+ - `arg 2` = Quality
+    - **Research** - Filters results to download only "ResearchGrade" observations
+    - **All_Q**      -  Results include "needs_id" and "casual"  observations
+ - `arg 3` =License type
+    - **Wikicommons** - include only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve since most images are CC-BY-NC
+    - **NonCC** - Excludes images with copyright "CC"
+    - **All_L**  - Downloads all types of licenses
 
+From command line you could run the following:
+
+​	`Rscript inat_images.R 2000 Research NonCC`
+
+This would make a query for a maximum of 2000 observations and then filter the results to download only "ResearchGrade" and images without a "CC License"
 
 3.- If everything goes well you should have a folder for each species from your list
 

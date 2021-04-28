@@ -57,7 +57,7 @@ final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder
   # this step selects only "research" and open licenses if a species has more than 10 records
   if (args[2] == "Research") {
     newdata <- newdata[newdata$quality_grade == "research", ]}
-  else if (args[2] == "All"){
+  else if (args[2] == "All_Q"){
     newdata <- newdata
   }
   
@@ -65,7 +65,7 @@ final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder
     newdata <- newdata[(newdata$license != "") & (newdata$license != "CC-BY-NC"), ]}
   else if (args[3] == "NonCC"){
     newdata <- newdata[newdata$license != "", ]}
-  else if (args[3] == "All"){
+  else if (args[3] == "All_L"){
     newdata <- newdata
   }
   
