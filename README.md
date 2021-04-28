@@ -1,9 +1,9 @@
 # Inat_Images
 
 
-You can now cite the code using the following DOI
+You can now cite the code using the following:
 
-<a href="https://doi.org/10.5281/zenodo.4725852"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4725852.svg" alt="DOI"></a>
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4725851.svg)](https://doi.org/10.5281/zenodo.4725851)
 
 Script to download images from inaturalist.org
 
@@ -40,12 +40,6 @@ This would make a query for a maximum of 2000 observations and then filter the r
 ![](./samples/images.png)
 
 5.- A file *inat_data.csv* with the results of your query will be saved, this files include various information like :species, date, url, coordinates, user, etc.
-
-Notes:
-
-Results per species are limited to 50 images, you can change this parameter on `get_inat_obs()` function
-
-If your query has more than 10 hits, only research grade and an open license images will be downloaded. You can edit this parameter in line 58.
 
 
 
