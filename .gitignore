@@ -6,4 +6,10 @@ renv/
 renv.lock
 .Rprofile
 Inat_Images.Rproj
-
+images/
+species.csv
+inat_data.csv
+species.csv
+.Rhistory
+.Rhistory
+.Rhistory
