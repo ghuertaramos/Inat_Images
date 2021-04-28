@@ -3,11 +3,9 @@
 
 You can now cite the code using the following DOI
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4725852.svg)](https://doi.org/10.5281/zenodo.4725852)
+<a href="https://doi.org/10.5281/zenodo.4725852"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4725852.svg" alt="DOI"></a>
 
 Script to download images from inaturalist.org
-
-
 
 1.- Make a species list on a csv file named *species.csv*
 
