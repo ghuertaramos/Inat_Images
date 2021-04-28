@@ -53,12 +53,12 @@ species <- unique(inat_data$scientific_name)
 final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder) {
   newdata <- inat_data[inat_data$scientific_name == x, ]
   
-  # this step selects only "research" and open licenses if a species has more than 10 records
-  if (nrow(newdata) > 10) {
-    newdata <- newdata[newdata$quality_grade == "research", ]
-    # "cc" images are no tagged, this next step excludes them
-    newdata <- newdata[newdata$license != "", ]
-  }
+  # # this step selects only "research" and open licenses if a species has more than 10 records
+  # if (nrow(newdata) > 10) {
+  #   newdata <- newdata[newdata$quality_grade == "research", ]
+  #   # "cc" images are no tagged, this next step excludes them
+  #   newdata <- newdata[newdata$license != "", ]
+  # }
   
   infolder <- paste0(sub(" ", "_", x))
   infolder <- file.path(image_folder, infolder)
@@ -76,8 +76,8 @@ final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder
         url <- newdata[b, ]$image_url
         id <- newdata[b, ]$id
         
-        file_name <- paste0(infolder, "_", user, "_", cc, "_", id, ".jpeg")
-        file_name <- file.path(image_folder, file_name)
+        file_name <- paste0(x, "_", user, "_", cc, "_", id, ".jpeg")
+        file_name <- file.path(infolder, file_name)
         download.file(url, file_name, method = "curl")
       },
       error = function(e) {
