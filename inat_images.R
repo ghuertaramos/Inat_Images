@@ -3,6 +3,7 @@
 
 library(rinat)
 
+args <- commandArgs(trailingOnly = TRUE)
 image_folder <- "./images"
 dir.create(image_folder)
 
@@ -29,10 +30,10 @@ inat_data <- sapply(X = obs, FUN = function(x) {
   tryCatch(
     {
       # change "maxresults" argument to set the number of images to download
-      inat_out <- get_inat_obs(taxon_name = x, maxresults = 50)
+      inat_out <- get_inat_obs(taxon_name = x, maxresults = as.numeric(args[1]))
       
       # delay queries 2.5 seconds to avoid server overload error
-      Sys.sleep(2.5)
+      Sys.sleep(3)
     },
     error = function(e) {
       print(paste0("WARNING:couldn't find a match for ", x))
@@ -53,12 +54,20 @@ species <- unique(inat_data$scientific_name)
 final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder) {
   newdata <- inat_data[inat_data$scientific_name == x, ]
   
-  # # this step selects only "research" and open licenses if a species has more than 10 records
-  # if (nrow(newdata) > 10) {
-  #   newdata <- newdata[newdata$quality_grade == "research", ]
-  #   # "cc" images are no tagged, this next step excludes them
-  #   newdata <- newdata[newdata$license != "", ]
-  # }
+  # this step selects only "research" and open licenses if a species has more than 10 records
+  if (args[2] == "Research") {
+    newdata <- newdata[newdata$quality_grade == "research", ]}
+  else if (args[2] == "All"){
+    newdata <- newdata
+  }
+  
+  if (args[3] == "Wikicommons") {
+    newdata <- newdata[(newdata$license != "") & (newdata$license != "CC-BY-NC"), ]}
+  else if (args[3] == "NonCC"){
+    newdata <- newdata[newdata$license != "", ]}
+  else if (args[3] == "All"){
+    newdata <- newdata
+  }
   
   infolder <- paste0(sub(" ", "_", x))
   infolder <- file.path(image_folder, infolder)
