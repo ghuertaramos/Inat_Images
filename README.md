@@ -6,8 +6,6 @@ Script to download images from inaturalist.org
 
 1.- Clone this repository using `git clone https://github.com/ghuertaramos/Inat_Images.git` or download directly clicking [here](https://github.com/ghuertaramos/Inat_Images/archive/refs/heads/master.zip)
 
-​	
-
 2.- Make a species list on a csv file named *species.csv* (see the sample file [here](./species.csv))
 
 ![](./samples/list.png)
