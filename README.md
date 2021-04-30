@@ -46,7 +46,7 @@ This would make a query for a maximum of 2000 observations and then filter the r
 
 
 
-Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, April 28). ghuertaramos/Inat_Images: v.1 (Version 1.0). Zenodo.  http://doi.org/10.5281/zenodo.4725852
+Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, April 28). Inat_Images: v.1 (Version 1.0). Zenodo.  http://doi.org/10.5281/zenodo.4725852
 
 Vijay Barve & Edmund Hart (2014). rinat: Access iNaturalist data through APIs. R package version 0.1.8.
 
