@@ -34,6 +34,7 @@ You must always provide 3 arguments for your query:
 
 You could run something like the following:
 
+
 	`Rscript inat_images.R 2000 Research NonCC`
 
 This would make a query for a maximum of 2000 observations and then filter the results to download only "ResearchGrade" and images without a "CC" license
@@ -57,8 +58,6 @@ In order to comply with iNaturalist [citation policy](https://www.inaturalist.or
 The script has some time restrictions to be able to comply with iNaturalist API query limits:  max of 100 requests per minute,  though it is recommended to reduce usage to 60 requests per minute or lower.  There is a hard limit of 10,000 observations with the iNaturalist API.  Be aware that bulk download may impact severely impact server usage.  Consider supporting [iNaturalist.org](https://www.inaturalist.org/donate?utm_medium=web&utm_source=iNaturalist)
 
 # Citations
-
-
 
 Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, April 28). Inat_Images: v.1 (Version 1.0). Zenodo.  http://doi.org/10.5281/zenodo.4725852
 
