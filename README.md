@@ -15,16 +15,14 @@ Script to download images from inaturalist.org
 You must always provide 3 arguments for your query:
 
  - `arg 1` = **Maximum number of results**
-    
+   
     - should not be a number higher than 10000, keep in mind this is before filtering 	
     
-      
  - `arg 2` = **Quality**
     - `Research` - Filters results to download only "ResearchGrade" observations
     
     - `All_Q`      -  Results include "Needs_id" and "Casual"  observations
     
-      
  - `arg 3` =**License type**
     - `Wikicommons` - include only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve since most images have a "CC-BY-NC" license
     
@@ -40,7 +38,7 @@ You could run something like the following:
 
 This would make a query for a maximum of 2000 observations and then filter the results to download only "ResearchGrade" and images without a "CC" license
 
-[4]().- If everything goes well you should have a folder for each species from your list
+4.- If everything goes well you should have a folder for each species from your list
 
 ![](./samples/folders.png)
 
