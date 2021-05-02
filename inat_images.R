@@ -10,17 +10,17 @@ dir.create(image_folder)
 # read csv file with species names
 obs <- read.csv("./species.csv", header = TRUE)
 
-# Select genus and species columns to creat  species query
+# Select genus and species columns to create  species query
 obs <- as.data.frame(paste(obs$Genus, obs$Species))
 
 ## optional functions if your database has any of the following:
 # delete empty rows
 obs <- obs[!(obs == " "), ]
 
-# delete subspecies since they are not accepted as query
+# delete subspecies since they are not accepted as query (they will be downloaded as descendant taxa)
 obs <- sub("^(\\S*\\s+\\S+).*", "\\1", obs)
 
-# delete duplicated accessions
+# delete duplicated names
 obs <- unique(obs)
 
 #### get image urls and information
@@ -33,7 +33,7 @@ inat_data <- sapply(X = obs, FUN = function(x) {
       inat_out <- get_inat_obs(taxon_name = x, maxresults = as.numeric(args[1]))
       
       # delay queries 2.5 seconds to avoid server overload error
-      Sys.sleep(3)
+      Sys.sleep(2.5)
     },
     error = function(e) {
       print(paste0("WARNING:couldn't find a match for ", x))
