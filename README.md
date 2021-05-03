@@ -67,11 +67,13 @@ This would make a query for a maximum of 500 research grade observations includi
 
 # Notes
 
-Depending on the intended use of the images, be aware of license properties and limitations, some licenses require attribution, asking the original holder for permission to reuse, etc. See [CreativeCommons]( https://creativecommons.org/licenses/?lang=en) and [iNaturalist help page](https://www.inaturalist.org/pages/help)  for more information.
+
+Depending on the intended use of the images, be aware of license properties and limitations, some licenses require attribution, asking the original holder for permission to reuse, etc. See [creativecommons]( https://creativecommons.org/licenses/?lang=en) and [iNaturalist help page](https://www.inaturalist.org/pages/help)  for more information.
 
 In order to comply with iNaturalist [citation policy](https://www.inaturalist.org/pages/help#cite), it is important to include in your publication some sort of table/appendix with a link to each of the  observations. You could base this table on the *inat_data.csv* output file.
 
 The script has some time restrictions to be able to comply with iNaturalist query limits. There is a  max of 100 requests per minute,  though it is recommended to reduce usage to 60 requests per minute or lower. There is a hard limit of 10,000 observations with the iNaturalist API per species per query.  Be aware that bulk download may severely impact server usage.  Downloading over 5 GB of media per hour or 24 GB of media per day may  result in a permanent block. Consider supporting [iNaturalist.org](https://www.inaturalist.org/donate?utm_medium=web&utm_source=iNaturalist)
+
 
 # Citations
 
