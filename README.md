@@ -10,34 +10,48 @@ Script to download images from inaturalist.org
 
 ![](./samples/list.png)
 
-3.- Run the script on the command line. (You must have R and the *rinat* package installed) 
+3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed) 
 
-You must always provide 3 arguments for your query:
+inat_images.R [-h] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS]
 
- - `arg 1` = **Maximum number of results**
-   
-    - should not be a number higher than 10000, keep in mind this is before filtering 	
-    
- - `arg 2` = **Quality**
-    - `Research` - Filters results to download only "ResearchGrade" observations
-    
-    - `All_Q`      -  Results include "Needs_id" and "Casual"  observations
-    
- - `arg 3` =**License type**
-    - `Wikicommons` - include only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve since most images have a "CC-BY-NC" license
-    
-    - `NonCC` - Excludes images with "CC" copyright
-    
-    - `All_L`  - Downloads all license types
-    
-      
+` -h`, `--help` - Show **help** message and exit
 
-You could run something like the following:
+`-o` , `--observations` - The maximum number of results to return [default "100"], limited to 10000, keep in mind this is before filtering
+
+` -q `, `--quality`  - **Quality grade** [default "Research"]
+
+- `Research` - Filters results to download only "ResearchGrade" observations
+
+- `All_Q`      -  Results include "Needs_id" and "Casual"  observations
+
+`-l `, `--license`  - **License type** [default "NonCC"]
+
+- `Wikicommons` - include only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve since most images have a "CC-BY-NC" license
+
+- `NonCC` - Excludes images with "CC" copyright
+
+- `All_L`  - Downloads all license types
+
+`-y` , `--year`  - Return observations for a given **year** (can only be one year) [default "None"]
+
+`-m`  `--month` - Return observations for a given **month**, must be numeric, 1-12 [default "None"]
+
+` -d `, `--day`   - Return observations for a given **day** of the month, 1-31 [default "None"]
+
+` -b `,` --bounds`  - A txt file with **box** of longitude (-180 to 180) and latitude (-90 to 90). See bounds.txt sample file [default "None"]
+
+You could run commands like the following:
 
 
-	`Rscript inat_images.R 2000 Research NonCC`
+```bash
+Rscript inat_images.R -o 2000 -q All_Q -l Wikicommons
+```
 
-This would make a query for a maximum of 2000 observations and then filter the results to download only "ResearchGrade" and images without a "CC" license
+This would make a query for a maximum of 2000 research grade observations and then filter the results to download only images with a license compatible with Wikicommons
+
+`Rscript inat_images.R -o 500 -l All_l -y 2015 -b bounds.txt`
+
+This would make a query for a maximum of 500 research grade observations and then filter the results all license types from the year 2015 and use the coordinates on *bounds.txt* to filter results 
 
 4.- If everything goes well you should have a folder for each species from your list
 
