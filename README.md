@@ -10,7 +10,7 @@ Script to download images from inaturalist.org
 
 ![](./samples/list.png)
 
-3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed) 
+3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually) 
 
 inat_images.R [-h] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS]
 

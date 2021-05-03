@@ -1,19 +1,21 @@
 #! /usr/bin/Rscript
 ## Guillermo Huerta Ramos
 
-# inat_packages <- c("rinat","argparse")
-# package.check <- lapply(
-#   inat_packages,
-#   FUN = function(x) {
-#     if (!require(x, character.only = TRUE)) {
-#       install.packages(x, dependencies = TRUE,repos='http://cran.us.r-project.org')
-#       library(x, character.only = TRUE)
-#     }
-#   }
-# )
-library(rinat)
-library(argparse)
+#this functions makes sure the packages are installed and then loads them
+inat_packages <- c("rinat","argparse")
+package.check <- lapply(
+  inat_packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE,repos='https://cloud.r-project.org')
+      library(x, character.only = TRUE)
+    }
+  }
+)
+# library(rinat)
+# library(argparse)
 
+#argument configuration
 parser <- ArgumentParser()
 
 parser$add_argument("-o", "--observations", default=100,
@@ -39,6 +41,7 @@ parser$add_argument("-b", "--bounds", default=NULL,
 
 args <- parser$parse_args()
 
+#create image folder
 image_folder <- "./images"
 dir.create(image_folder)
 
@@ -58,6 +61,7 @@ obs <- sub("^(\\S*\\s+\\S+).*", "\\1", obs)
 # delete duplicated names
 obs <- unique(obs)
 
+# if argument "bounds" is used the next funcion reads the file
 if (!is.null(args$bounds)) {
   bounds <- paste0("./", args$bounds)
   args$bounds <- read.csv(bounds, header= FALSE)
