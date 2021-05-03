@@ -1,9 +1,47 @@
 #! /usr/bin/Rscript
 ## Guillermo Huerta Ramos
 
-library(rinat)
+#this functions makes sure the packages are installed and then loads them
+inat_packages <- c("rinat","argparse")
+package.check <- lapply(
+  inat_packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE,repos='https://cloud.r-project.org')
+      library(x, character.only = TRUE)
+    }
+  }
+)
+# library(rinat)
+# library(argparse)
 
-args <- commandArgs(trailingOnly = TRUE)
+#argument configuration
+parser <- ArgumentParser()
+
+parser$add_argument("-o", "--observations", default=100,
+                    help="The maximum number of results to return [default \"%(default)s\"]")
+
+parser$add_argument("-q", "--quality", default="Research", 
+                    help = "Quality grade Research or All_Q [default \"%(default)s\"]")
+
+parser$add_argument("-l", "--license", default="NonCC", 
+                    help = "License type NonCC, Wikicommons or All_L [default \"%(default)s\"]")
+
+parser$add_argument("-y", "--year", default=NULL,
+                    help="Return observations for a given year (can only be one year) [default \"%(default)s\"]")
+
+parser$add_argument("-m", "--month", default=NULL,
+                    help="Return observations for a given month, must be numeric, 1-12 [default \"%(default)s\"]")
+
+parser$add_argument("-d", "--day", default=NULL,
+                    help="Return observations for a given day of the month, 1-31 [default \"%(default)s\"]")
+
+parser$add_argument("-b", "--bounds", default=NULL,
+                    help="A txt file with box of longitude (-180 to 180) and latitude (-90 to 90) see bounds.txt sample [default \"%(default)s\"]")
+
+args <- parser$parse_args()
+
+#create image folder
 image_folder <- "./images"
 dir.create(image_folder)
 
@@ -23,6 +61,12 @@ obs <- sub("^(\\S*\\s+\\S+).*", "\\1", obs)
 # delete duplicated names
 obs <- unique(obs)
 
+# if argument "bounds" is used the next funcion reads the file
+if (!is.null(args$bounds)) {
+  bounds <- paste0("./", args$bounds)
+  args$bounds <- read.csv(bounds, header= FALSE)
+}
+
 #### get image urls and information
 inat_data <- sapply(X = obs, FUN = function(x) {
   message(sprintf("Fetching data for %s", x))
@@ -30,7 +74,14 @@ inat_data <- sapply(X = obs, FUN = function(x) {
   tryCatch(
     {
       # change "maxresults" argument to set the number of images to download
-      inat_out <- get_inat_obs(taxon_name = x, maxresults = as.numeric(args[1]))
+      inat_out <- get_inat_obs(taxon_name = x,
+                               maxresults = as.numeric(args$observations),
+                               quality = NULL,
+                               year = args$year,
+                               month = args$month,
+                               day = args$day,
+                               bounds = args$bounds
+                               )
       
       # delay queries 2.5 seconds to avoid server overload error
       Sys.sleep(2.5)
@@ -54,18 +105,17 @@ species <- unique(inat_data$scientific_name)
 final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder) {
   newdata <- inat_data[inat_data$scientific_name == x, ]
   
-  # this step selects only "research" and open licenses if a species has more than 10 records
-  if (args[2] == "Research") {
+  if (args$quality == "Research") {
     newdata <- newdata[newdata$quality_grade == "research", ]}
-  else if (args[2] == "All_Q"){
+  else if (args$quality == "All_Q"){
     newdata <- newdata
   }
   
-  if (args[3] == "Wikicommons") {
+  if (args$license == "Wikicommons") {
     newdata <- newdata[(newdata$license != "") & (newdata$license != "CC-BY-NC"), ]}
-  else if (args[3] == "NonCC"){
+  else if (args$license == "NonCC"){
     newdata <- newdata[newdata$license != "", ]}
-  else if (args[3] == "All_L"){
+  else if (args$license == "All_L"){
     newdata <- newdata
   }
   
