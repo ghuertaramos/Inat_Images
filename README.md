@@ -77,6 +77,6 @@ The script has some time restrictions to be able to comply with iNaturalist quer
 
 # Citations
 
-Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, April 28). Inat_Images: v.1 (Version 1.0). Zenodo.  http://doi.org/10.5281/zenodo.4733367
+Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, April 28). Inat_Images: v.1.1 (Version 1.1). Zenodo.  http://doi.org/10.5281/zenodo.4733367
 
 Vijay Barve & Edmund Hart (2014). rinat: Access iNaturalist data through APIs. R package version 0.1.8.
