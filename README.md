@@ -38,7 +38,7 @@ inat_images.R [-h] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-y YEAR] [-m MON
 
 ` -d `, `--day`   - Return observations for a given **day** of the month, 1-31 [default "None"]
 
-` -b `,` --bounds`  - A txt file with **box** of longitude (-180 to 180) and latitude (-90 to 90). See bounds.txt sample file [default "None"]
+` -b `,` --bounds`  - A txt file with **box** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default "None"]
 
 You could run commands like the following:
 
@@ -49,9 +49,11 @@ Rscript inat_images.R -o 2000 -q All_Q -l Wikicommons
 
 This would make a query for a maximum of 2000 research grade observations and then filter the results to download only images with a license compatible with Wikicommons
 
-`Rscript inat_images.R -o 500 -l All_l -y 2015 -b bounds.txt`
+```bash
+Rscript inat_images.R -o 500 -l All_l -y 2015 -b bounds.txt
+```
 
-This would make a query for a maximum of 500 research grade observations and then filter the results all license types from the year 2015 and use the coordinates on *bounds.txt* to filter results 
+This would make a query for a maximum of 500 research grade observations including all license types, from the year 2015 and use the coordinates on *bounds.txt* to filter results 
 
 4.- If everything goes well you should have a folder for each species from your list
 
@@ -65,11 +67,11 @@ This would make a query for a maximum of 500 research grade observations and the
 
 # Notes
 
-Depending on the intended use of the images, it is important to be aware of license properties and limitations, some licenses require attribution, asking the original holder for permission to reuse, etc. See [CreativeCommons]( https://creativecommons.org/licenses/?lang=en) and [iNaturalist help page](https://www.inaturalist.org/pages/help)  for more information.
+Depending on the intended use of the images, be aware of license properties and limitations, some licenses require attribution, asking the original holder for permission to reuse, etc. See [CreativeCommons]( https://creativecommons.org/licenses/?lang=en) and [iNaturalist help page](https://www.inaturalist.org/pages/help)  for more information.
 
 In order to comply with iNaturalist [citation policy](https://www.inaturalist.org/pages/help#cite), it is important to include in your publication some sort of table/appendix with a link to each of the  observations. You could base this table on the *inat_data.csv* output file.
 
-The script has some time restrictions to be able to comply with iNaturalist API query limits:  max of 100 requests per minute,  though it is recommended to reduce usage to 60 requests per minute or lower.  There is a hard limit of 10,000 observations with the iNaturalist API.  Be aware that bulk download may impact severely impact server usage.  Consider supporting [iNaturalist.org](https://www.inaturalist.org/donate?utm_medium=web&utm_source=iNaturalist)
+The script has some time restrictions to be able to comply with iNaturalist query limits. There is a  max of 100 requests per minute,  though it is recommended to reduce usage to 60 requests per minute or lower. There is a hard limit of 10,000 observations with the iNaturalist API per species per query.  Be aware that bulk download may severely impact server usage.  Downloading over 5 GB of media per hour or 24 GB of media per day may  result in a permanent block. Consider supporting [iNaturalist.org](https://www.inaturalist.org/donate?utm_medium=web&utm_source=iNaturalist)
 
 # Citations
 

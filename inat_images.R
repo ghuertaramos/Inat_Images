@@ -13,8 +13,6 @@
 # )
 library(rinat)
 library(argparse)
-# args <- commandArgs(trailingOnly = TRUE)
-
 
 parser <- ArgumentParser()
 
