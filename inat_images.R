@@ -22,10 +22,13 @@ parser$add_argument("-o", "--observations", default=100,
                     help="The maximum number of results to return [default \"%(default)s\"]")
 
 parser$add_argument("-q", "--quality", default="Research", 
-                    help = "Quality grade Research or All_Q [default \"%(default)s\"]")
+                    help = "Quality grade - Research or All_Q [default \"%(default)s\"]")
 
 parser$add_argument("-l", "--license", default="NonCC", 
-                    help = "License type NonCC, Wikicommons or All_L [default \"%(default)s\"]")
+                    help = "License type - NonCC, Wikicommons or All_L [default \"%(default)s\"]")
+
+parser$add_argument("-s", "--size", default="Medium",
+                    help="Select image size - Small, Medium, Large, Original [default \"%(default)s\"]")
 
 parser$add_argument("-y", "--year", default=NULL,
                     help="Return observations for a given year (can only be one year) [default \"%(default)s\"]")
@@ -134,6 +137,14 @@ final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder
         }
         url <- newdata[b, ]$image_url
         id <- newdata[b, ]$id
+        
+        if (args$size == "Small") {
+         url <- sub("medium","small", url)  }
+        else if (args$size == "Large") {   
+         url <- sub("medium","large", url) }
+        else if (args$size == "Original") {   
+          url <- sub("medium","original", url) }
+        else {url<-url}
         
         file_name <- paste0(x, "_", user, "_", cc, "_", id, ".jpeg")
         file_name <- file.path(infolder, file_name)

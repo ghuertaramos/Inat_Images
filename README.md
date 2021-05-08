@@ -27,10 +27,15 @@ inat_images.R [-h] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-y YEAR] [-m MON
 `-l `, `--license`  - **License type** [default "NonCC"]
 
 - `Wikicommons` - include only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve since most images have a "CC-BY-NC" license
-
 - `NonCC` - Excludes images with "CC" copyright
-
 - `All_L`  - Downloads all license types
+
+`-s `, `--size`  - **Image size** [default "Medium"]
+
+- `Small`  - Maximum width or length = 240px
+- `Medium`  - Maximum width or length =500px
+- `Large`  - Maximum width or length =1024px
+- `Original`  - Maximum width or length =2048px
 
 `-y` , `--year`  - Return observations for a given **year** (can only be one year) [default "None"]
 
