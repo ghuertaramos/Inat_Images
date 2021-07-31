@@ -7,3 +7,5 @@ renv.lock
 .Rprofile
 Inat_Images.Rproj
 .Rhistory
+images
+inat_data.csv
