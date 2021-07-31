@@ -6,7 +6,7 @@ Script to download images from inaturalist.org
 
 1.- Clone this repository using `git clone https://github.com/ghuertaramos/Inat_Images.git` or download directly clicking [here](https://github.com/ghuertaramos/Inat_Images/archive/refs/heads/master.zip)
 
-2.- Make a species list on a csv file named *species.csv* (see the sample file [here](./species.csv))
+2.- Make a species list on a *csv* file named *species.csv* (see the sample file [here](./species.csv))
 
 ![](./samples/list.png)
 
@@ -18,35 +18,36 @@ inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-
 
 `-o` `--observations` - The maximum number of results to return [default "100"], limited to 10000, keep in mind this is before filtering
 
-` -q ` `--quality`  - **Quality grade** [default "Research"]
+` -q ` `--quality`  - **Quality grade** [default `Research`]
 
 - `Research` - Filters results to download only "ResearchGrade" observations (ID agreed by two or more iNaturalist users)
 
 - `All_Q`      -  Results include "Needs_id" and "Casual"  observations
 
-`-l ` `--license`  - **License type** [default "NonCC"]
+`-l `  `--license`  - **License type** [default `NonCC`]
 
 - `Wikicommons` - includes only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve, since most images have a "CC-BY-NC" license
 - `NonCC` - Excludes images with "CC" copyright
 - `All_L`  - Downloads all license types
 
-`-s ` `--size`  - **Image size** [default "Medium"]
+`-s `  `--size`  - **Image size** [default `Medium`]
 
 - `Small`  - Maximum width or length = 240px
 - `Medium`  - Maximum width or length =500px
 - `Large`  - Maximum width or length =1024px
 - `Original`  - Maximum width or length =2048px
 
-`-y` `--year`  - Return observations for a given **year** (can only be one year) [default "None"]
+`-y` `--year`  - Return observations for a given **year** (can only be one year) [default `None`]
 
-`-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default "None"]
+`-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default `None`]
 
-` -d ` `--day`   - Return observations for a given **day** of the month, 1-31 [default "None"]
+` -d ` `--day`   - Return observations for a given **day** of the month, 1-31 [default `None`]
 
-` -b ` ` --bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default "None"]
+` -b ` ` --bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default `None`]
 
-You could run commands like the following:
+***
 
+Examples:
 
 ```bash
 Rscript inat_images.R -o 2000 -q All_Q -l Wikicommons
@@ -59,6 +60,8 @@ Rscript inat_images.R -o 500 -l All_l -y 2015 -b bounds.txt
 ```
 
 This would make a query for a maximum of 500 research grade observations, including all license types, from the year 2015 and use the coordinates on *bounds.txt* to filter results 
+
+***
 
 4.- If everything goes well you should have a folder for each species from your list
 
