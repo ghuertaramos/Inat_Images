@@ -14,36 +14,36 @@ Script to download images from inaturalist.org
 
 inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS]
 
-` -h` `--help` - Show **help** message and exit
+`-h` `--help` - Show **help** message and exit
 
-`-o` `--observations` - The maximum number of results to return [default `100`], limited to 10000, keep in mind this is before filtering
+`-o` `--observations` - The maximum number of results to return [default --`100`], limited to 10000, keep in mind this is before filtering
 
-` -q ` `--quality`  - **Quality grade** [default `Research`]
+`-q` `--quality`  - **Quality grade** [default --`Research`]
 
 - `Research` - Filters results to download only "ResearchGrade" observations (ID agreed by two or more iNaturalist users)
 
 - `All_Q`      -  Results include "Needs_id" and "Casual"  observations
 
-`-l `  `--license`  - **License type** [default `NonCC`]
+`-l`  `--license`  - **License type** [default --`NonCC`]
 
 - `Wikicommons` - includes only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve, since most images have a "CC-BY-NC" license
 - `NonCC` - Excludes images with "CC" copyright
 - `All_L`  - Downloads all license types
 
-`-s `  `--size`  - **Image size** [default `Medium`]
+`-s`  `--size`  - **Image size** [default --`Medium`]
 
 - `Small`  - Maximum width or length = 240px
 - `Medium`  - Maximum width or length =500px
 - `Large`  - Maximum width or length =1024px
 - `Original`  - Maximum width or length =2048px
 
-`-y` `--year`  - Return observations for a given **year** (can only be one year) [default `None`]
+`-y` `--year`  - Return observations for a given **year** (can only be one year) [default --`None`]
 
-`-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default `None`]
+`-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default --`None`]
 
-` -d ` `--day`   - Return observations for a given **day** of the month, 1-31 [default `None`]
+`-d ` `--day`   - Return observations for a given **day** of the month, 1-31 [default --`None`]
 
-` -b ` ` --bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default `None`]
+`-b ` `--bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default --`None`]
 
 ***
 
