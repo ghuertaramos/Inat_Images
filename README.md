@@ -1,6 +1,6 @@
 # Inat_Images
 
-#### [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4725852.svg)](https://doi.org/10.5281/zenodo.4725852) 
+#### [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4733367.svg)](https://doi.org/10.5281/zenodo.4733367) 
 
 Script to download images from inaturalist.org
 
@@ -85,6 +85,8 @@ The script has a time delay to be able to comply with iNaturalist query limits. 
 
 # Citations
 
-Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, May 3). Inat_Images: v.1.1 (Version 1.1). Zenodo.  http://doi.org/10.5281/zenodo.4725852
+
+Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, May 3). Inat_Images: v.1.1 (Version 1.1). Zenodo.  http://doi.org/10.5281/zenodo.4733367
+
 
 Vijay Barve & Edmund Hart (2014). rinat: Access iNaturalist data through APIs. R package version 0.1.8.
