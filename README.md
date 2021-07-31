@@ -16,7 +16,7 @@ inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-
 
 ` -h` `--help` - Show **help** message and exit
 
-`-o` `--observations` - The maximum number of results to return [default "100"], limited to 10000, keep in mind this is before filtering
+`-o` `--observations` - The maximum number of results to return [default `100`], limited to 10000, keep in mind this is before filtering
 
 ` -q ` `--quality`  - **Quality grade** [default `Research`]
 
