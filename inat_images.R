@@ -66,8 +66,14 @@ obs <- unique(obs)
 
 # if argument "bounds" is used the next funcion reads the file
 if (!is.null(args$bounds)) {
-  bounds <- paste0("./", args$bounds)
-  args$bounds <- read.csv(bounds, header= FALSE)
+  # Read the file as a single line
+  bounds <- readLines(paste0("./", args$bounds))
+  
+  # Remove "c(" and ")" to extract only the numeric values
+  bounds <- gsub("c\\(|\\)", "", bounds)
+  
+  # Split the string into numeric values
+  args$bounds <- as.numeric(unlist(strsplit(bounds, ",")))
 }
 
 #### get image urls and information
