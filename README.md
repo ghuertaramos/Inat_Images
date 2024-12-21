@@ -12,7 +12,7 @@ Script to download images from inaturalist.org
 
 3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually). Check default parameters, the available flags are the following: 
 
-inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS]
+inat_images.R [-h HELP] [-i INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
 
 `-h` `--help` - Show **help** message and exit
 
@@ -20,9 +20,11 @@ inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-
 
 `-q` `--quality`  - **Quality grade** [default -- `Research`]
 
-- `Research` - Filters results to download only "ResearchGrade" observations (ID agreed by two or more iNaturalist users)
+- `Research` - Includes only research-grade observations (ID agreed by two or more iNaturalist users).
 
-- `All_Q`      -  Results include "Needs_id" and "Casual"  observations
+- `Casual` - Includes only casual-grade observations.
+
+- `All_Q`      -  Includes "Research-grade", "Needs ID" and "Casual" observations.
 
 `-l`  `--license`  - **License type** [default -- `NonCC`]
 
@@ -37,6 +39,13 @@ inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-
 - `Large`  - Maximum width or length =1024px
 - `Original`  - Maximum width or length =2048px
 
+`-a` `--annotation` - Filter by annotation. [default --  `None`]
+Provide a vector of two IDs:
+The first ID corresponds to the annotation term (e.g., Life Stage, Sex, etc.).
+The second ID corresponds to the annotation value (e.g., Adult, Flowering, etc.).
+Example: `-a` 1,2 filters for "Life Stage = Adult".
+For more details about annotations and their IDs, see this guide on [iNaturalist](https://forum.inaturalist.org/t/how-to-use-inaturalists-search-urls-wiki-part-2-of-2/18792).
+
 `-y` `--year`  - Return observations for a given **year** (can only be one year) [default --  `None`]
 
 `-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default -- `None`]
@@ -45,6 +54,9 @@ inat_images.R [-h HELP] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-
 
 `-b` `--bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default -- `None`]
 
+`-f` `--folder` - Path to the output folder where images will be stored [default -- images].
+
+`-output` `--output` - Path to the output CSV file for storing the results [default -- inat_data.csv].
 ***
 
 Examples:
@@ -53,14 +65,18 @@ Examples:
 Rscript inat_images.R -o 2000 -q All_Q -l Wikicommons
 ```
 
-This would make a query for a maximum of 2000 research grade observations and then filter the results to download only images with a license compatible with Wikicommons
+Query for a maximum of 2000 research grade observations and then filter the results to download only images with a license compatible with Wikicommons
 
 ```bash
 Rscript inat_images.R -o 500 -l All_l -y 2015 -b bounds.txt
 ```
 
-This would make a query for a maximum of 500 research grade observations, including all license types, from the year 2015 and use the coordinates on *bounds.txt* to filter results 
+Query for a maximum of 500 research grade observations, including all license types, from the year 2015 and use the coordinates on *bounds.txt* to filter results 
 
+```bash
+Rscript inat_images.R -q Casual -a 12,15 -output flower_buds.csv
+```
+Query for Casual-grade observations with specific annotations (e.g., flower buds)
 ***
 
 4.- If everything goes well you should have a folder for each species from your list
@@ -82,6 +98,10 @@ In order to comply with iNaturalist [citation policy](https://www.inaturalist.or
 
 The script has a time delay to be able to comply with iNaturalist query limits. The INaturalist API is set to a max of 100 requests per minute,  though it is recommended to reduce usage to 60 requests per minute or lower. There is a hard limit of 10,000 observations with the  per species per query.  Be aware that bulk download may severely impact server usage.  Downloading over 5 GB of media per hour or 24 GB of media per day may  result in a permanent block. Consider supporting [iNaturalist.org](https://www.inaturalist.org/donate?utm_medium=web&utm_source=iNaturalist)
 
+Annotations are not very common across iNaturalist observations.
+The script downloads images based on observation IDs, and only the first image of an observation is retrieved. This means the downloaded image may not correspond to the requested annotation.
+
+License Filtering: The `-o` option specifies the maximum number of observations to query, but if you apply the license filter, the final results will be fewer than the maximum. To get an approximate number of desired results after filtering, you should set a higher value for `-o`.
 
 # Citations
 
@@ -89,4 +109,4 @@ The script has a time delay to be able to comply with iNaturalist query limits. 
 Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, May 3). Inat_Images: v.1.1 (Version 1.1). Zenodo.  http://doi.org/10.5281/zenodo.4733367
 
 
-Vijay Barve & Edmund Hart (2014). rinat: Access iNaturalist data through APIs. R package version 0.1.8.
+Vijay Barve & Edmund Hart (2024). rinat: Access iNaturalist data through APIs. R package version 0.1.9.
