@@ -12,13 +12,16 @@ Script to download images from inaturalist.org
 
 3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually). Check default parameters, the available flags are the following: 
 
-inat_images.R [-h HELP] [-i INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
+```bash
+inat_images.R [-h HELP] [-input INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
+```
+`-input` `--input` - Path to the input CSV file containing species data [default -- species.csv].
 
-`-h` `--help` - Show **help** message and exit
+`-h` `--help` - Show **help** message and exit.
 
-`-o` `--observations` - The maximum number of results to return [default -- `100`], limited to 10000, keep in mind this is before filtering
+`-o` `--observations` - The maximum number of results to return [default -- `100`], limited to 10000, keep in mind this is before filtering.
 
-`-q` `--quality`  - **Quality grade** [default -- `Research`]
+`-q` `--quality`  - **Quality grade** [default -- `Research`].
 
 - `Research` - Includes only research-grade observations (ID agreed by two or more iNaturalist users).
 
@@ -26,33 +29,33 @@ inat_images.R [-h HELP] [-i INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [
 
 - `All_Q`      -  Includes "Research-grade", "Needs ID" and "Casual" observations.
 
-`-l`  `--license`  - **License type** [default -- `NonCC`]
+`-l`  `--license`  - **License type** [default -- `NonCC`].
 
-- `Wikicommons` - includes only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve, since most images have a "CC-BY-NC" license
-- `NonCC` - Excludes images with "CC" copyright
-- `All_L`  - Downloads all license types
+- `Wikicommons` - includes only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve, since most images have a "CC-BY-NC" license.
+- `NonCC` - Excludes images with "CC" copyright.
+- `All_L`  - Downloads all license types.
 
-`-s`  `--size`  - **Image size** [default -- `Medium`]
+`-s`  `--size`  - **Image size** [default -- `Medium`].
 
-- `Small`  - Maximum width or length = 240px
-- `Medium`  - Maximum width or length =500px
-- `Large`  - Maximum width or length =1024px
-- `Original`  - Maximum width or length =2048px
+- `Small`  - Maximum width or length = 240px.
+- `Medium`  - Maximum width or length =500px.
+- `Large`  - Maximum width or length =1024px.
+- `Original`  - Maximum width or length =2048px.
 
-`-a` `--annotation` - Filter by annotation. [default --  `None`]
+`-a` `--annotation` - Filter by annotation. [default --  `None`].
 Provide a vector of two IDs:
 The first ID corresponds to the annotation term (e.g., Life Stage, Sex, etc.).
 The second ID corresponds to the annotation value (e.g., Adult, Flowering, etc.).
 Example: `-a` 1,2 filters for "Life Stage = Adult".
-For more details about annotations and their IDs, see this guide on [iNaturalist](https://forum.inaturalist.org/t/how-to-use-inaturalists-search-urls-wiki-part-2-of-2/18792).
+For more details about annotations and their IDs, see this guide on [iNaturalist](https://forum.inaturalist.org/t/how-to-use-inaturalists-search-urls-wiki-part-2-of-2/18792#heading--annotations).
 
-`-y` `--year`  - Return observations for a given **year** (can only be one year) [default --  `None`]
+`-y` `--year`  - Return observations for a given **year** (can only be one year) [default --  `None`].
 
-`-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default -- `None`]
+`-m` `--month` - Return observations for a given **month**, must be numeric, 1-12 [default -- `None`].
 
-`-d` `--day`   - Return observations for a given **day** of the month, 1-31 [default -- `None`]
+`-d` `--day`   - Return observations for a given **day** of the month, 1-31 [default -- `None`].
 
-`-b` `--bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default -- `None`]
+`-b` `--bounds`  - A txt file with a **"box"** of longitude (-180 to 180) and latitude (-90 to 90). See [bounds.txt](./bounds.txt) sample file [default -- `None`].
 
 `-f` `--folder` - Path to the output folder where images will be stored [default -- images].
 
