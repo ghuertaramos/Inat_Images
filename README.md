@@ -13,7 +13,8 @@ Script to download images from inaturalist.org
 3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually). Check default parameters, the available flags are the following: 
 
 ```bash
-inat_images.R [-h HELP] [-input INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE] [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
+inat_images.R [-h HELP] [-input INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE]
+              [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
 ```
 `-input` `--input` - Path to the input CSV file containing species data [default -- species.csv].
 
@@ -79,7 +80,7 @@ Query for a maximum of 500 research grade observations, including all license ty
 ```bash
 Rscript inat_images.R -q Casual -a 12,15 -output flower_buds.csv
 ```
-Query for Casual-grade observations with specific annotations (e.g., flower buds)
+Query for Casual-grade observations with specific annotations (e.g., flower buds) and save observations lst to custom file.
 ***
 
 4.- If everything goes well you should have a folder for each species from your list
