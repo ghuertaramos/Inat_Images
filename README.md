@@ -17,7 +17,7 @@ Rscript inat_images.R -args
  (You must have R, *rinat* and *optparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually). Check default parameters, the available flags are the following: 
 
 ```bash
-inat_images.R [-h HELP] [-i INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE]
+Rscript inat_images.R [-h HELP] [-i INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE]
               [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
 ```
 `-i` `--input` - Path to the input CSV file containing species data [default -- species.csv].
