@@ -1,248 +1,251 @@
 #! /usr/bin/Rscript
 ## Guillermo Huerta Ramos
 
-#this functions makes sure the packages are installed and then loads them
-inat_packages <- c("rinat","argparse")
+# ---- Packages: install + load (rinat, optparse) ----
+inat_packages <- c("rinat", "optparse")
 package.check <- lapply(
   inat_packages,
-  FUN = function(x) {
-    if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE,repos='https://cloud.r-project.org')
-      library(x, character.only = TRUE)
+  function(x) {
+    # set a CRAN mirror if none is set (avoids interactive prompts)
+    repos <- getOption("repos")
+    if (is.null(repos) || is.na(repos["CRAN"]) || repos["CRAN"] == "@CRAN@") {
+      options(repos = c(CRAN = "https://cloud.r-project.org"))
     }
+    if (!requireNamespace(x, quietly = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+    }
+    suppressPackageStartupMessages(library(x, character.only = TRUE))
   }
 )
 
-#argument configuration
-parser <- ArgumentParser()
+# ---- CLI (optparse) ----
+option_list <- list(
+  make_option(c("-i","--input"),  type="character", default="species.csv",
+              help="Path to the input CSV [default %default]"),
+  make_option(c("-f","--folder"), type="character", default="images",
+              help="Output folder for images [default %default]"),
+  make_option(c("-o","--observations"), type="integer", default=100,
+              help="Max observations to query (pre-filter) [default %default]"),
+  make_option(c("-q","--quality"), type="character", default="Research",
+              help="Quality grade: Research | Casual | All_Q [default %default]"),
+  make_option(c("-l","--license"), type="character", default="NonCC",
+              help="License filter: Wikicommons | NonCC | All_L [default %default]"),
+  make_option(c("-s","--size"), type="character", default="Medium",
+              help="Image size: Small | Medium | Large | Original [default %default]"),
+  make_option(c("-a","--annotation"), type="character", default=NULL,
+              help="term_id,value_id (e.g., 12,15)"),
+  make_option(c("-y","--year"),  type="integer", default=NULL),
+  make_option(c("-m","--month"), type="integer", default=NULL),
+  make_option(c("-d","--day"),   type="integer", default=NULL),
+  make_option(c("-b","--bounds"), type="character", default=NULL,
+              help="Path to txt: lon_min,lat_min,lon_max,lat_max"),
+  make_option(c("--output"), type="character", default="inat_data.csv",
+              help="Output CSV path [default %default]")
+)
+args <- parse_args(OptionParser(option_list = option_list))
 
-parser$add_argument("-input", "--input", default="species.csv",
-                    help="Path to the input CSV file containing species data [default \"%(default)s\"]")
+# ---- helper: resize final photo URL to requested size ----
+resize_url <- function(u, size) {
+  size <- tolower(size)
+  # Replace the trailing size token while preserving extension
+  pattern <- "(square|small|medium|large|original)\\.(jpg|jpeg)$"
+  if (is.na(u) || !nzchar(u)) return(u)
+  if (grepl(pattern, u, perl = TRUE)) {
+    sub(pattern, paste0(size, ".\\2"), u, perl = TRUE)
+  } else {
+    u
+  }
+}
 
-parser$add_argument("-output", "--output", default="inat_data.csv",
-                    help="Path to the output CSV file for storing the results [default \"%(default)s\"]")
+# ---- Early validation & normalization ----
+quality <- tolower(trimws(args$quality))
+license <- tolower(trimws(args$license))
+size    <- tolower(trimws(args$size))
 
-parser$add_argument("-f", "--folder", default="images",
-                    help="Path to the output folder where images will be stored [default \"%(default)s\"]")
+valid_quality <- c("research","casual","all_q")
+valid_license <- c("wikicommons","noncc","all_l")
+valid_size    <- c("small","medium","large","original")
 
-parser$add_argument("-o", "--observations", default=100,
-                    help="The maximum number of results to return [default \"%(default)s\"]")
+if (!quality %in% valid_quality) stop("Invalid quality. Use: Research, Casual, or All_Q.")
+if (!license %in% valid_license) {
+  sug <- valid_license[which.min(adist(license, valid_license))]
+  stop(sprintf(
+    "Invalid license '%s'. Use: Wikicommons, NonCC, or All_L.%s",
+    args$license,
+    if (!is.na(sug)) sprintf(" Did you mean '%s'?", sug) else ""
+  ))
+}
+if (!size %in% valid_size) stop("Invalid size. Use: Small, Medium, Large, or Original.")
 
-parser$add_argument("-q", "--quality", default="Research", 
-                    help="Quality grade to filter observations. Options: 'Research' (default), 'Casual', or 'All_Q' for both research and casual grades.")
+# write normalized values back so the rest of the code uses the canonical forms
+args$quality <- quality
+args$license <- license
+args$size    <- size
 
-parser$add_argument("-l", "--license", default="NonCC", 
-                    help = "License type - NonCC, Wikicommons or All_L [default \"%(default)s\"]")
+# optional range checks
+if (is.numeric(args$observations) && (args$observations < 1 || args$observations > 10000)) {
+  stop("observations (-o) must be between 1 and 10000.")
+}
+if (!is.null(args$month) && (args$month < 1 || args$month > 12)) stop("month (-m) must be 1..12.")
+if (!is.null(args$day)   && (args$day   < 1 || args$day   > 31)) stop("day (-d) must be 1..31.")
 
-parser$add_argument("-s", "--size", default="Medium",
-                    help="Select image size - Small, Medium, Large, Original [default \"%(default)s\"]")
-
-parser$add_argument("-a", "--annotation", default=NULL,
-                    help="Filter by annotation. Provide a vector of length 2: [term ID, value ID]. E.g., [1,2] for Life Stage = Adult.")
-
-parser$add_argument("-y", "--year", default=NULL,
-                    help="Return observations for a given year (can only be one year) [default \"%(default)s\"]")
-
-parser$add_argument("-m", "--month", default=NULL,
-                    help="Return observations for a given month, must be numeric, 1-12 [default \"%(default)s\"]")
-
-parser$add_argument("-d", "--day", default=NULL,
-                    help="Return observations for a given day of the month, 1-31 [default \"%(default)s\"]")
-
-parser$add_argument("-b", "--bounds", default=NULL,
-                    help="A txt file with box of longitude (-180 to 180) and latitude (-90 to 90) see bounds.txt sample [default \"%(default)s\"]")
-
-args <- parser$parse_args()
-
-# Get the folder path from the arguments
+# ---- Paths & input ----
 image_folder <- args$folder
+if (!dir.exists(image_folder)) dir.create(image_folder, recursive = TRUE, showWarnings = FALSE)
 
-# Create the folder if it doesn't exist
-if (!dir.exists(image_folder)) {
-  dir.create(image_folder, recursive = TRUE, showWarnings = FALSE)
-}
-
-# Get the input file from the arguments
 input_file <- args$input
+if (!file.exists(input_file)) stop(sprintf("The specified input file '%s' does not exist.", input_file))
 
-# Check if the input file exists
-if (!file.exists(input_file)) {
-  stop(sprintf("The specified input file '%s' does not exist.", input_file))
+obs_df <- tryCatch(
+  read.csv(input_file, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE),
+  error = function(e) stop("Failed to read input CSV: ", e$message)
+)
+
+# Build species vector "Genus Species"
+species <- trimws(paste(obs_df$Genus, obs_df$Species))
+species <- species[nzchar(species)]
+species <- sub("^(\\S+\\s+\\S+).*", "\\1", species)
+species <- unique(species)
+if (length(species) == 0) stop("No valid 'Genus Species' rows found in input.")
+
+# ---- Annotation (parse + validate + set ann_vec) ----
+ann_vec <- NULL
+if (!is.null(args$annotation)) {
+  parts <- as.integer(strsplit(args$annotation, ",", fixed = TRUE)[[1]])
+  if (length(parts) != 2 || anyNA(parts)) {
+    stop("Annotation must be two integers like 12,15 (term_id,value_id).")
+  }
+  term_id <- parts[1]
+  term_value_id <- parts[2]
+  
+  valid_annotations <- list(
+    `1`  = c(2, 3, 4, 5, 6, 7, 8, 16),    # Life Stage
+    `9`  = c(10, 11),                     # Sex
+    `12` = c(13, 14, 15, 21),             # Plant Phenology
+    `17` = c(18, 19, 20),                 # Alive or Dead
+    `22` = c(23,24,25,26,27,28,29,30,31,32,35) # Evidence of Presence
+  )
+  if (!(as.character(term_id) %in% names(valid_annotations)) ||
+      !(term_value_id %in% valid_annotations[[as.character(term_id)]])) {
+    stop("Invalid term_id/value_id for annotation. Check the valid pairs.")
+  }
+  ann_vec <- parts  # what we actually pass to get_inat_obs()
 }
 
-# Read the input file
-obs <- read.csv(input_file, header = TRUE)
+# ---- Bounds (optional) ----
+bounds_vec <- NULL
+if (!is.null(args$bounds)) {
+  if (!file.exists(args$bounds)) stop("Bounds file not found: ", args$bounds)
+  b <- scan(args$bounds, what = double(), sep = ",", quiet = TRUE, strip.white = TRUE)
+  if (length(b) != 4) stop("Bounds must be 'lon_min,lat_min,lon_max,lat_max' (4 numbers).")
+  bounds_vec <- b
+}
 
-# Select genus and species columns to create  species query
-obs <- as.data.frame(paste(obs$Genus, obs$Species))
-
-## optional functions if your database has any of the following:
-# delete empty rows
-obs <- obs[!(obs == " "), ]
-
-# delete subspecies since they are not accepted as query (they will be downloaded as descendant taxa)
-obs <- sub("^(\\S*\\s+\\S+).*", "\\1", obs)
-
-# delete duplicated names
-obs <- unique(obs)
-
-# Check if annotation is provided and valid
-if (!is.null(args$annotation)) {
-  # Convert annotation from a string to a numeric vector
-  args$annotation <- as.numeric(unlist(strsplit(args$annotation, ",")))
-
-# Validate the length
-if (length(args$annotation) != 2) {
-    stop("Invalid annotation format. Provide two numeric values separated by a comma. E.g., '1,2' for Life Stage = Adult.")
+# ---- Fetch per species ----
+inat_list <- lapply(species, function(sp) {
+  message(sprintf("Fetching data for %s", sp))
+  
+  call_args <- list(
+    taxon_name = sp,
+    maxresults = as.numeric(args$observations),
+    year  = args$year,
+    month = args$month,
+    day   = args$day,
+    bounds = bounds_vec
+  )
+  if (!is.null(ann_vec)) call_args$annotation <- ann_vec
+  
+  if (args$quality == "research") {
+    call_args$quality <- "research"
+  } else if (args$quality == "casual") {
+    call_args$quality <- "casual"
+  } else if (args$quality == "all_q") {
+    # do nothing → omit quality to get both grades
+  } else {
+    stop("Invalid quality. Use Research, Casual, or All_Q.")
   }
   
-  term_id <- args$annotation[1]
-  term_value_id <- args$annotation[2]
-} else {
-  term_id <- NULL
-  term_value_id <- NULL
-}
-
-valid_annotations <- list(
-  `1` = c(2, 3, 4, 5, 6, 7, 8, 16),  # Life Stage
-  `9` = c(10, 11),                   # Sex
-  `12` = c(13, 14, 15, 21),          # Plant Phenology
-  `17` = c(18, 19, 20),              # Alive or Dead
-  `22` = c(23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 35)  # Evidence of Presence
-)
-
-if (!is.null(args$annotation)) {
-  if (!term_id %in% names(valid_annotations) || !term_value_id %in% valid_annotations[[as.character(term_id)]]) {
-    stop("Invalid term ID or value ID for annotation. Please check the documentation for valid values.")
-  }
-}
-
-
-# if argument "bounds" is used the next funcion reads the file
-if (!is.null(args$bounds)) {
-  bounds <- paste0("./", args$bounds)
-  args$bounds <- read.csv(bounds, header= FALSE)
-}
-
-#### get image urls and information
-inat_data <- sapply(X = obs, FUN = function(x) {
-  message(sprintf("Fetching data for %s", x))
-  # trycatch function enables to continue the script even if a query doesn't have any hits
-  tryCatch(
-    {
-      # change "maxresults" argument to set the number of images to download
-      quality <- tolower(trimws(args$quality))  # Normalize to lowercase and remove whitespace
-      
-      if (quality == "all_q") {
-        inat_out <- get_inat_obs(
-          taxon_name = x,
-          maxresults = as.numeric(args$observations),
-          annotation = c(term_id, term_value_id),
-          year = args$year,
-          month = args$month,
-          day = args$day,
-          bounds = args$bounds
-        )
-      } else if (quality == "research") {
-        inat_out <- get_inat_obs(
-          taxon_name = x,
-          maxresults = as.numeric(args$observations),
-          quality = "research",
-          annotation = c(term_id, term_value_id),
-          year = args$year,
-          month = args$month,
-          day = args$day,
-          bounds = args$bounds
-        )
-      } else if (quality == "casual") {
-        inat_out <- get_inat_obs(
-          taxon_name = x,
-          maxresults = as.numeric(args$observations),
-          quality = "casual",
-          annotation = c(term_id, term_value_id),
-          year = args$year,
-          month = args$month,
-          day = args$day,
-          bounds = args$bounds
-        )
-      } else {
-        stop("Invalid quality value. Options are 'Research', 'Casual', or 'All_Q'.")
-      }
-      
-      # delay queries 2.5 seconds to avoid server overload error
-      Sys.sleep(2.5)
-    },
-    error = function(e) {
-      print(paste0("WARNING:couldn't find a match for ", x))
-    }
+  inat_out <- tryCatch(
+    do.call(get_inat_obs, call_args),
+    error = function(e) { message("  WARNING: no match for ", sp); NULL }
   )
   
-  if (!exists("inat_out")) {
-    return(NULL)
+  Sys.sleep(2.5)  # be nice to the API
+  inat_out
+})
+
+inat_data <- Filter(Negate(is.null), inat_list)
+if (length(inat_data) == 0) stop("No data returned from iNaturalist for your query.")
+inat_data <- do.call(rbind, inat_data)
+
+# ---- Per-species filtering + download ----
+species_found <- unique(inat_data$scientific_name)
+
+final_inat_list <- lapply(species_found, function(sp) {
+  newdata <- inat_data[inat_data$scientific_name == sp, ]
+  
+  # license filter
+  lic <- args$license
+  lic_col <- toupper(trimws(newdata$license))
+  lic_col <- sub("^CC-0$", "CC0", lic_col)
+  
+  if (lic == "wikicommons") {
+    allow <- c("CC0", "CC-BY", "CC-BY-SA")
+    newdata <- newdata[lic_col %in% allow, ]
+  } else if (lic == "noncc") {
+    # EXCLUDE only the strict "CC" string; keep CC0 and all CC-* variants
+    newdata <- newdata[lic_col != "CC", ]
+  } else if (lic == "all_l") {
+    # no filter
   } else {
-    return(inat_out)
-  }
-}, simplify = FALSE)
-omit_inat <- sapply(X = inat_data, FUN = is.null)
-inat_data <- do.call(rbind, inat_data[!omit_inat])
-
-species <- unique(inat_data$scientific_name)
-
-final_inat_data <- sapply(X = species, FUN = function(x, inat_data, image_folder) {
-  newdata <- inat_data[inat_data$scientific_name == x, ]
-
-  # if (args$quality == "Research") {
-  #   newdata <- newdata[newdata$quality_grade == "research", ]}
-  # else if (args$quality == "All_Q"){
-  #   newdata <- newdata
-  # }
-
-  if (args$license == "Wikicommons") {
-    newdata <- newdata[(newdata$license != "") & (newdata$license != "CC-BY-NC"), ]}
-  else if (args$license == "NonCC"){
-    newdata <- newdata[newdata$license != "", ]}
-  else if (args$license == "All_L"){
-    newdata <- newdata
+    stop("Invalid license. Use Wikicommons, NonCC, or All_L.")
   }
   
-  infolder <- paste0(sub(" ", "_", x))
-  infolder <- file.path(image_folder, infolder)
-  dir.create(infolder, showWarnings = FALSE)
+  # drop rows without an image url
+  newdata <- newdata[!is.na(newdata$image_url) & nzchar(newdata$image_url), ]
+  if (nrow(newdata) == 0) return(NULL)
+  
+  # create species folder
+  infolder <- file.path(image_folder, gsub(" ", "_", sp))
+  dir.create(infolder, showWarnings = FALSE, recursive = TRUE)
   
   for (b in seq_len(nrow(newdata))) {
+    user <- newdata$user_login[b]
+    cc   <- newdata$license[b]
+    if (is.na(cc) || cc == "") cc <- "NO_LIC" else cc <- sub("^CC-0$", "CC0", cc)
+    url  <- newdata$image_url[b]
+    id   <- newdata$id[b]
+    
+    if (is.na(url) || !nzchar(url)) {
+      message("  Skipping obs ", id, " — empty image_url")
+      next
+    }
+    
+    # apply requested size
+    url <- resize_url(url, args$size)
+    
+    file_name <- file.path(infolder, paste0(sp, "_", user, "_", cc, "_", id, ".jpeg"))
+    
+    ok <- TRUE
     tryCatch(
-      {
-        user <- newdata[b, ]$user_login
-        cc <- newdata[b, ]$license
-        # "cc" images are no tagged, this next step includes "CC" on file names
-        if (cc == "") {
-          cc <- "CC"
-        }
-        url <- newdata[b, ]$image_url
-        id <- newdata[b, ]$id
-        
-        if (args$size == "Small") {
-         url <- sub("medium","small", url)  }
-        else if (args$size == "Large") {   
-         url <- sub("medium","large", url) }
-        else if (args$size == "Original") {   
-          url <- sub("medium","original", url) }
-        else {url<-url}
-        
-        file_name <- paste0(x, "_", user, "_", cc, "_", id, ".jpeg")
-        file_name <- file.path(infolder, file_name)
-        download.file(url, file_name, method = "curl")
-      },
-      error = function(e) {
-        print(paste0("WARNING: couldn't find the url"))
-      }
+      download.file(url, file_name, mode = "wb", quiet = TRUE),
+      error = function(e) { ok <<- FALSE }
     )
+    if (!ok && args$size == "original") {
+      url2 <- resize_url(url, "large")
+      message("  original failed, retrying large: ", id)
+      try(download.file(url2, file_name, mode = "wb", quiet = TRUE), silent = TRUE)
+    }
   }
   
-  return(newdata)
-}, inat_data = inat_data, image_folder = image_folder, simplify = FALSE)
-final_inat_data <- do.call(rbind, final_inat_data)
+  newdata
+})
 
-# Write the final inaturalist data to the specified output file
-write.table(final_inat_data, args$output, row.names = FALSE, sep = "\t")
+final_inat_list <- Filter(Negate(is.null), final_inat_list)
+if (length(final_inat_list) == 0) stop("All results were filtered out (license and/or empty image URLs).")
+final_inat_data <- do.call(rbind, final_inat_list)
 
+# ---- Write CSV ----
+dir.create(dirname(args$output), recursive = TRUE, showWarnings = FALSE)
+write.csv(final_inat_data, args$output, row.names = FALSE)
+cat("Done. Data saved to:", args$output, "\n")
