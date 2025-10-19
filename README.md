@@ -10,13 +10,17 @@ Script to download images from inaturalist.org
 
 ![](./samples/list.png)
 
-3.- Run the script on the command line. (You must have R, *rinat* and the *argparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually). Check default parameters, the available flags are the following: 
+3.- Run the script on the command line.
+```bash
+Rscript inat_images.R -args
+```
+ (You must have R, *rinat* and *optparse* packages installed, the script tries to install and load the packages,  but if you have a problem install them manually). Check default parameters, the available flags are the following: 
 
 ```bash
-inat_images.R [-h HELP] [-input INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE]
+inat_images.R [-h HELP] [-i INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENSE] [-s SIZE]
               [-y YEAR] [-m MONTH] [-d DAY] [-b BOUNDS] [-f FOLDER] [-output OUTPUT]
 ```
-`-input` `--input` - Path to the input CSV file containing species data [default -- species.csv].
+`-i` `--input` - Path to the input CSV file containing species data [default -- species.csv].
 
 `-h` `--help` - Show **help** message and exit.
 
@@ -33,7 +37,7 @@ inat_images.R [-h HELP] [-input INPUT] [-o OBSERVATIONS] [-q QUALITY] [-l LICENS
 `-l`  `--license`  - **License type** [default -- `NonCC`].
 
 - `Wikicommons` - includes only photos with a license acceptable to WikiCommons  (i.e., CC-0, CC-BY, CC-BY-SA). Unfortunately, this filter greatly decreases the amount of pictures you can retrieve, since most images have a "CC-BY-NC" license.
-- `NonCC` - Excludes images with "CC" copyright.
+- `NonCC` - Exclude only the strict string "CC"; keep all CC variants (CC0, CC-BY, CC-BY-NC, …)
 - `All_L`  - Downloads all license types.
 
 `-s`  `--size`  - **Image size** [default -- `Medium`].
