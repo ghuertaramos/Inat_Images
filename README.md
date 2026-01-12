@@ -114,7 +114,7 @@ License Filtering: The `-o` option specifies the maximum number of observations 
 # Citations
 
 
-Guillermo Huerta-Ramos, & Roman Luštrik.  (2021, May 3). Inat_Images: v.1.1 (Version 1.1). Zenodo.  http://doi.org/10.5281/zenodo.4733367
+Guillermo Huerta-Ramos, & Roman Luštrik.  (2025, Oct 19). Inat_Images: v.1.2 (Version 1.2). Zenodo.  http://doi.org/10.5281/zenodo.4725851
 
 
 Vijay Barve & Edmund Hart (2024). rinat: Access iNaturalist data through APIs. R package version 0.1.9.
