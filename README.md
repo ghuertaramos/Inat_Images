@@ -1,6 +1,6 @@
 # Inat_Images
 
-#### [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4733367.svg)](https://doi.org/10.5281/zenodo.4733367) 
+#### [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4725851.svg)](https://doi.org/10.5281/zenodo.4725851) 
 
 Script to download images from inaturalist.org
 
